@@ -15,6 +15,9 @@ const GET_LOCATIONS = gql`
     }
     ]) {
     total results {
+        rdfs_label{
+          value 
+        }
         isLocatedAt{
         schema_geo{
           schema_latitude
@@ -39,11 +42,10 @@ function DisplayLocations() {
       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
     />
-  
-    {data.poi.results.map(({ isLocatedAt }) => (
+    {data.poi.results.map(({ isLocatedAt,rdfs_label }) => (
      <Marker position={[isLocatedAt[0].schema_geo[0].schema_latitude[0],isLocatedAt[0].schema_geo[0].schema_longitude[0]]}>
       <Popup>
-       Coucou
+       {rdfs_label[0].value}
       </Popup>
     </Marker>
     ))}
