@@ -1,14 +1,28 @@
 import { useQuery, gql } from '@apollo/client';
 
-const GET_LOCATIONS = gql`
-  query getLocations {
-    locations {
-      id
-      name
-      description
-      photo
+const GET_LOCATIONS = gql`	
+{
+  poi(
+    filters: [{
+      isLocatedAt: {
+        schema_address: {
+          schema_addressLocality: {
+            _eq: "La Rochelle"
+          }
+        }
+      }
+    }
+    ]) {
+    total results {
+        isLocatedAt{
+        schema_geo{
+          schema_latitude
+          schema_longitude
+        }
+      }
     }
   }
+}
 `;
 
 function DisplayLocations() {
@@ -16,25 +30,25 @@ function DisplayLocations() {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
-  return data.locations.map(({ id, name, description, photo }) => (
-    <div key={id}>
-      <h3>{name}</h3>
-      <img width="400" height="250" alt="location-reference" src={`${photo}`} />
-      <br />
-      <b>About this location:</b>
-      <p>{description}</p>
-      <br />
+  
+  return data.poi.results.map(({ isLocatedAt }) => (
+    <div>
+      <p>
+        {isLocatedAt[0].schema_geo[0].schema_latitude}
+        {isLocatedAt[0].schema_geo[0].schema_longitude}
+      </p>
     </div>
   ));
+  
 }
 
 export default function App() {
   return (
     <div>
       <h2>
-        My first Apollo app
-        <span role="img" aria-label="rocket">
-          🚀
+        GéoLocalisation POI
+        <span role="img">
+          🗺️
         </span>
       </h2>
       <br />
