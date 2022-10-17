@@ -1,4 +1,5 @@
 import { useQuery, gql } from '@apollo/client';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
 const GET_LOCATIONS = gql`	
 {
@@ -30,16 +31,25 @@ function DisplayLocations() {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
+  const positionFirstPoi = [data.poi.results[0].isLocatedAt[0].schema_geo[0].schema_latitude[0],data.poi.results[0].isLocatedAt[0].schema_geo[0].schema_longitude[0]];
+  return (
   
-  return data.poi.results.map(({ isLocatedAt }) => (
-    <div>
-      <p>
-        {isLocatedAt[0].schema_geo[0].schema_latitude}
-        {isLocatedAt[0].schema_geo[0].schema_longitude}
-      </p>
-    </div>
-  ));
+  <MapContainer center={positionFirstPoi} zoom={13} scrollWheelZoom={true} style={{ height: 800, width: 1200 }}>
+    <TileLayer
+      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    />
   
+    {data.poi.results.map(({ isLocatedAt }) => (
+     <Marker position={[isLocatedAt[0].schema_geo[0].schema_latitude[0],isLocatedAt[0].schema_geo[0].schema_longitude[0]]}>
+      <Popup>
+       Coucou
+      </Popup>
+    </Marker>
+    ))}
+
+  </MapContainer>
+  );
 }
 
 export default function App() {
@@ -52,7 +62,9 @@ export default function App() {
         </span>
       </h2>
       <br />
-      <DisplayLocations />
+      <div>
+        <DisplayLocations />
+      </div>
     </div>
   );
 }
