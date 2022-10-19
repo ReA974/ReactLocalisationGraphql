@@ -1,12 +1,13 @@
 import { useQuery, gql } from '@apollo/client';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 
 export default function App() {
   const [ville, setVille] = useState("");
   const [poi, setPoi] = useState("");
-  
-  var GET_LOCATIONS = gql`	
+  const [lat, setLat] = useState(0);
+  const [lng, setLng] = useState(0);
+  var temp_Location = gql`	
   {
     poi(
       filters: [{
@@ -33,11 +34,13 @@ export default function App() {
     }
   }
   `;
+
+  const [GET_LOCATIONS,setLocations] = useState(temp_Location);
   
   const handleSubmit = (evt) => {
     evt.preventDefault();
     if(ville !== "" && poi !== ""){
-    GET_LOCATIONS = gql`	
+   setLocations(gql`	
      {
       poi(
         filters: [{
@@ -67,11 +70,10 @@ export default function App() {
         }
       }
     }
-  `;
+  `)
     }
     if(ville !== "" && poi === ""){
-      console.log(ville);
-      GET_LOCATIONS = gql`	
+     setLocations(gql`	
       {
        poi(
          filters: [{
@@ -97,11 +99,10 @@ export default function App() {
          }
        }
      }
-   `;
-   console.log(GET_LOCATIONS);
+   `);
     }
     if(poi !== "" && ville === ""){
-      GET_LOCATIONS = gql`	
+      setLocation(gql`	
       {
        poi(
          filters: [{
@@ -123,7 +124,39 @@ export default function App() {
          }
        }
      }
-   `;
+   `)
+    }
+    if(lat !== 0 && lng !== 0){
+      setLocations(gql`    
+      {
+        poi(
+          filters: [{
+            isLocatedAt: {
+              schema_geo: {
+                schema_latitude: {
+                  _eq: ${lat}
+                }
+                schema_longitude: {
+                  _eq: ${lng}
+                }
+              }
+            }
+          }
+          ]) {
+            total results {
+              rdfs_label{
+                value
+              }
+              isLocatedAt{
+              schema_geo{
+                schema_latitude
+                schema_longitude
+              }
+            }
+          }
+        }
+      }
+    `)
     }
   }
 
@@ -131,11 +164,17 @@ export default function App() {
     const { loading, error, data } = useQuery(GET_LOCATIONS);
   
     if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error :(</p>;
+    if (error) return <p>Error : </p>;
+
     const positionFirstPoi = [data.poi.results[0].isLocatedAt[0].schema_geo[0].schema_latitude[0],data.poi.results[0].isLocatedAt[0].schema_geo[0].schema_longitude[0]];
+
     return (
     
-    <MapContainer center={positionFirstPoi} zoom={13} scrollWheelZoom={true} style={{ height: 800, width: 1200 }}>
+    <MapContainer center={positionFirstPoi} zoom={13} scrollWheelZoom={true} style={{ height: 800, width: 1200 }}  eventHandlers={{
+      click: () => {
+        console.log('marker clicked')
+      },
+    }}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -147,7 +186,7 @@ export default function App() {
         </Popup>
       </Marker>
       ))}
-  
+
     </MapContainer>
     );
   }
@@ -175,6 +214,22 @@ export default function App() {
             type="text"
             value={poi}
             onChange={e => setPoi(e.target.value)}
+          />
+        </label>
+        <label>
+          Latitude:
+          <input
+            type="text"
+            value={lat}
+            onChange={e => setLat(e.target.value)}
+          />
+        </label>
+        <label>
+          Longitude:
+          <input
+            type="text"
+            value={lng}
+            onChange={e => setLng(e.target.value)}
           />
         </label>
         <input type="submit" value="Submit" />

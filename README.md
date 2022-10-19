@@ -1,16 +1,27 @@
-# Get started with Apollo Client
+# Code Projet géolocalisation POI avec graphql
 
-This is the complete code from [Get started with Apollo Client](https://www.apollographql.com/docs/react/get-started).
+Ce projet est basé du l'api apollo qui permet de faciliter la connexion entre React et GrapQl.
+Pour l'affichage d'une carte ce projet utilise React-Leaflet qui est un plugin react basé sur l'api leaflet.
 
-## Run locally
+## Lancement du code
 
 ```shell
 npm install
-npm start
+npm run start
+```
+## Données à utiliser pour tester l'application
+
+
+```shell
+Bordeaux
 ```
 
-## Run in CodeSandbox
+```shell
+Bordeaux
+Restaurant
+```
 
-<a href="https://codesandbox.io/s/github/apollographql/docs-examples/tree/main/apollo-client/v3/getting-started?fontsize=14&hidenavigation=1&theme=dark">
-  <img alt="Edit client-getting-started" src="https://codesandbox.io/static/img/play-codesandbox.svg">
-</a>
+```shell
+46.176737
+-1.152213
+```
