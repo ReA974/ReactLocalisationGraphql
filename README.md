@@ -11,15 +11,18 @@ npm run start
 ```
 ## Données à utiliser pour tester l'application
 
+Tester une ville :
 
 ```shell
 Bordeaux
 ```
+Tester une ville avec restaurant :
 
 ```shell
 Bordeaux
 Restaurant
 ```
+Tester les coordonnées (laisser les autres champs vide):
 
 ```shell
 46.176737
