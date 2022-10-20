@@ -9,7 +9,7 @@ export default function App() {
   const [lng, setLng] = useState(0);
   var temp_Location = gql`	
   {
-    poi(
+    poi( size:100,
       filters: [{
         isLocatedAt: {
           schema_address: {
@@ -42,7 +42,7 @@ export default function App() {
     if(ville !== "" && poi !== ""){
    setLocations(gql`	
      {
-      poi(
+      poi(size:100,
         filters: [{
           rdf_type: {
             _eq: "https://www.datatourisme.fr/ontology/core#${poi}"
@@ -74,7 +74,7 @@ export default function App() {
     }
     if(ville !== "" && poi === ""){
      setLocations(gql`	
-      {
+      {size:100,
        poi(
          filters: [{
            isLocatedAt: {
@@ -102,9 +102,9 @@ export default function App() {
    `);
     }
     if(poi !== "" && ville === ""){
-      setLocation(gql`	
+      setLocations(gql`	
       {
-       poi(
+       poi(size:100,
          filters: [{
            rdf_type: {
              _eq: "https://www.datatourisme.fr/ontology/core#${poi}"
@@ -128,7 +128,7 @@ export default function App() {
     }
     if(lat !== 0 && lng !== 0){
       setLocations(gql`    
-      {
+      {size:100,
         poi(
           filters: [{
             isLocatedAt: {
@@ -167,7 +167,6 @@ export default function App() {
   
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error : </p>;
-
     const positionFirstPoi = [data.poi.results[0].isLocatedAt[0].schema_geo[0].schema_latitude[0],data.poi.results[0].isLocatedAt[0].schema_geo[0].schema_longitude[0]];
 
     return (
