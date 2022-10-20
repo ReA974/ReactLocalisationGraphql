@@ -134,10 +134,12 @@ export default function App() {
             isLocatedAt: {
               schema_geo: {
                 schema_latitude: {
-                  _eq: ${lat}
+                  _gte: ${parseFloat(lat-0.1)}
+                  _lte: ${parseFloat(lat+0.1)}
                 }
                 schema_longitude: {
-                  _eq: ${lng}
+                  _gte: ${parseFloat(lng-0.1)}
+                  _lte: ${parseFloat(lng+0.1)}
                 }
               }
             }
